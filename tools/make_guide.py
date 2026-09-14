@@ -147,9 +147,13 @@ SECTIONS: list[tuple[str, list]] = [
     ("CÁC LỆNH KHÁC", [
         ("cmd", ("Chạy với một file cụ thể", "TaoAnh.exe D:\\duong-dan\\jobs.xlsx")),
         ("cmd", ("Chọn nơi lưu kết quả", "TaoAnh.exe jobs.xlsx -o D:\\anh-khach-A")),
+        ("cmd", ("Tạo nhiều ảnh cùng lúc cho nhanh", "TaoAnh.exe jobs.xlsx -t 6")),
         ("cmd", ("Chỉ kiểm tra, không tạo ảnh", "TaoAnh.exe jobs.xlsx --dry-run")),
         ("cmd", ("Xem chi tiết hơn khi chạy", "TaoAnh.exe jobs.xlsx -v")),
         ("cmd", ("Xem tất cả lựa chọn", "TaoAnh.exe --help")),
+        ("note", "Mặc định chương trình tạo 3 ảnh cùng lúc. Muốn nhanh hơn thì "
+                 "tăng lên bằng -t, tối đa 10. Đặt cao quá không nhanh thêm mà "
+                 "chỉ nặng máy chủ."),
         ("note", "Cũng có thể kéo thả file .xlsx thẳng vào biểu tượng TaoAnh.exe."),
     ]),
 ]

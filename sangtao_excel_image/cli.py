@@ -13,7 +13,7 @@ from datetime import datetime
 from pathlib import Path
 
 from . import __version__, api, cache, config, sheet
-from .runner import Options, Runner
+from .runner import DEFAULT_THREADS, MAX_THREADS, Options, Runner
 from .ui import ARROW, DASH, ELLIPSIS, ConsoleUI
 
 SUPPORTED = (".xlsx", ".xlsm", ".csv")
@@ -123,6 +123,9 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
                         help="Thu muc luu ket qua")
     parser.add_argument("-k", "--api-key",
                         help="API key (uu tien hon config.txt)")
+    parser.add_argument("-t", "--threads", type=int, default=DEFAULT_THREADS,
+                        help=f"So anh tao cung luc (1-{MAX_THREADS}, "
+                             f"mac dinh {DEFAULT_THREADS})")
     parser.add_argument("--retry", type=int, default=1,
                         help="So lan thu lai khi loi tam thoi (mac dinh 1)")
     parser.add_argument("--timeout", type=int, default=api.POLL_TIMEOUT,
@@ -179,8 +182,13 @@ def _run(args: argparse.Namespace, ui: ConsoleUI, interactive: bool) -> int:
         print(f"  {input_path.name} khong co dong du lieu nao.")
         return 1
 
+    threads = max(1, min(args.threads, MAX_THREADS))
+    if args.threads != threads:
+        print(f"  So luong chay cung luc chi nhan 1-{MAX_THREADS}, "
+              f"da dat ve {threads}.")
+
     out_dir = args.out or _default_out_dir(input_path)
-    ui.header(input_path, out_dir, len(rows))
+    ui.header(input_path, out_dir, len(rows), threads=threads)
 
     # --- api key ---
     api_key = args.api_key or config.load()
@@ -217,7 +225,7 @@ def _run(args: argparse.Namespace, ui: ConsoleUI, interactive: bool) -> int:
             if args.verbose:
                 ui.warn(f"Khong kiem tra duoc so du: {exc.message}")
 
-        ui.estimate(len(rows))
+        ui.estimate(len(rows), threads=threads)
 
         # Bam dup roi chay thang la de tru tien ngoai y muon. Hoi mot cau truoc.
         if interactive and not _confirm(len(rows)):
@@ -230,6 +238,7 @@ def _run(args: argparse.Namespace, ui: ConsoleUI, interactive: bool) -> int:
         retry=max(0, args.retry),
         poll_timeout=args.timeout,
         dry_run=args.dry_run,
+        threads=threads,
     )
     rep = Runner(client, options, ui).run(rows)
     upload_cache.save()

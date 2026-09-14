@@ -59,6 +59,7 @@ trường `SANGTAO_API_KEY`, hoặc `--api-key`.
 ```bash
 python main.py jobs.xlsx --dry-run      # kiểm tra file, không tốn tiền
 python main.py jobs.xlsx -o D:\anh      # chọn nơi lưu
+python main.py jobs.xlsx -t 6           # 6 ảnh cùng lúc (mặc định 3, tối đa 10)
 python main.py jobs.xlsx --retry 2 -v   # thử lại nhiều hơn, in chi tiết
 ```
 
@@ -82,7 +83,7 @@ hướng dẫn ae bấm qua.
 .venv/Scripts/python -m pytest tests/ -q
 ```
 
-63 test, không gọi mạng — lớp HTTP được thay bằng bản giả nên vẫn đi qua đúng code
+70 test, không gọi mạng — lớp HTTP được thay bằng bản giả nên vẫn đi qua đúng code
 thật của client.
 
 ## Ghi chú về API
@@ -98,8 +99,10 @@ Vài điều rút ra từ docs, đã xử lý sẵn trong tool:
   `QUOTA_EXHAUSTED` thì thử lại được; `PROMPT_UNCLEAR` / `CONTENT_REJECTED` /
   `REFERENCE_DOWNLOAD_FAILED` thì retry chỉ tốn thêm tiền.
 - Job hỏng không bị tính tiền, credit hoàn tự động.
-- Nhịp giữa hai job là 45 giây ở phía nhà cung cấp — bắn song song không nhanh hơn,
-  chỉ làm `queuePosition` tăng. Nên tool chạy tuần tự.
+- Chạy song song mặc định 3 ảnh cùng lúc (`-t`, tối đa 10). Đo thực tế: 6 ảnh với
+  3 luồng mất 84 giây, so với ~210 giây nếu chạy tuần tự.
+- Báo cáo và tên file luôn theo đúng thứ tự dòng trong Excel, kể cả khi các job
+  hoàn thành không theo thứ tự.
 - `idempotencyKey` để retry không bị trừ tiền hai lần.
 - Ảnh upload qua `/images/presign` cũng sống 7 ngày, nên cache có hạn 6 ngày —
   không bao giờ gửi URL sắp chết cho một job đang chờ.

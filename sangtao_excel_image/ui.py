@@ -70,13 +70,17 @@ class ConsoleUI:
 
     # ------------------------------------------------------------ tong quan
 
-    def header(self, input_path: Path, out_dir: Path, count: int) -> None:
+    def header(
+        self, input_path: Path, out_dir: Path, count: int, *, threads: int = 1
+    ) -> None:
         self._p()
         self._p("=" * 64)
         self._p(f"  Tao anh hang loat tu file Excel {DASH} sangtao.ai")
         self._p("=" * 64)
         self._p(f"  File vao   : {input_path.name}")
         self._p(f"  So dong    : {count}")
+        if threads > 1:
+            self._p(f"  Chay cung luc: {threads} anh")
         self._p(f"  Luu ket qua: {out_dir}")
         self._p("=" * 64)
         self._p()
@@ -106,11 +110,13 @@ class ConsoleUI:
         self._p(f"  Goi thang: con {result.quota_remaining} luot")
         self._p()
 
-    def estimate(self, count: int) -> None:
-        minutes = max(1, round(count * 60 / 60))
+    def estimate(self, count: int, *, threads: int = 1) -> None:
+        # Moi anh 30-90 giay; chay nhieu luong thi chia deu ra.
+        low = max(1, round(count * 30 / 60 / threads))
+        high = max(low, round(count * 90 / 60 / threads))
         self._p(
             f"  Uoc tinh: {count} anh, moi anh 30-90 giay "
-            f"{ARROW} khoang {minutes}-{minutes * 2} phut."
+            f"{ARROW} khoang {low}-{high} phut."
         )
         self._p("  Cu de cua so nay chay. Dung giua chung thi bam Ctrl+C.")
         self._p()

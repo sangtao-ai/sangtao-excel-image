@@ -353,6 +353,106 @@ def test_anh_khac_noi_dung_thi_upload_rieng(tmp_path, fake):
     assert len(fake.presigns) == 2
 
 
+# ------------------------------------------------------------- chay song song
+
+def run_threads(tmp_path, server, rows_data, threads):
+    path = make_sheet(tmp_path, rows_data)
+    rows = sheet.read(path)
+    options = runner.Options(
+        input_path=path, out_dir=tmp_path / "out", threads=threads
+    )
+    return runner.Runner(make_client(server), options, ConsoleUI()).run(rows)
+
+
+def test_chay_song_song_du_so_anh(tmp_path, fake):
+    rep = run_threads(tmp_path, fake, [
+        [f"canh so {i} rat dep va nhieu chi tiet", "", "", ""] for i in range(6)
+    ], threads=3)
+
+    assert rep.done == 6
+    assert len(fake.created) == 6
+    for i in range(1, 7):
+        assert (tmp_path / "out" / f"{i:04d}.png").exists()
+
+
+def test_bao_cao_giu_dung_thu_tu_dong(tmp_path, fake):
+    # Job ve khong theo thu tu, nhung bao cao phai theo thu tu dong trong Excel.
+    fake.script["job000"] = lambda n: "processing" if n < 4 else "complete"
+    fake.script["job001"] = lambda n: "processing" if n < 2 else "complete"
+
+    rep = run_threads(tmp_path, fake, [
+        ["canh mot rat dep va nhieu chi tiet", "", "", ""],
+        ["canh hai rat dep va nhieu chi tiet", "", "", ""],
+        ["canh ba rat dep va nhieu chi tiet", "", "", ""],
+    ], threads=3)
+
+    assert [e.line for e in rep.entries] == [2, 3, 4]
+    assert [e.prompt.split()[1] for e in rep.entries] == ["mot", "hai", "ba"]
+
+
+def test_ten_file_khop_voi_so_dong_khi_chay_song_song(tmp_path, fake):
+    fake.script["job000"] = lambda n: "processing" if n < 5 else "complete"
+
+    rep = run_threads(tmp_path, fake, [
+        ["canh mot rat dep va nhieu chi tiet", "", "", ""],
+        ["canh hai rat dep va nhieu chi tiet", "", "", ""],
+    ], threads=2)
+
+    by_line = {e.line: e for e in rep.entries}
+    assert by_line[2].file == "0001.png"   # dong 2 -> 0001
+    assert by_line[3].file == "0002.png"   # dong 3 -> 0002
+
+
+def test_mot_dong_hong_khong_anh_huong_dong_khac_khi_song_song(tmp_path, fake):
+    fake.script["job001"] = ("CONTENT_REJECTED", "Vi pham chinh sach")
+
+    rep = run_threads(tmp_path, fake, [
+        ["canh mot rat dep va nhieu chi tiet", "", "", ""],
+        ["canh hai rat dep va nhieu chi tiet", "", "", ""],
+        ["canh ba rat dep va nhieu chi tiet", "", "", ""],
+    ], threads=3)
+
+    assert rep.done == 2
+    assert rep.failed == 1
+    assert len(rep.entries) == 3
+
+
+def test_anh_chung_chi_upload_mot_lan_du_chay_song_song(tmp_path, fake):
+    # Nhieu luong cung can mot anh thi chi mot luong upload, khong phai moi
+    # luong mot lan.
+    (tmp_path / "logo.png").write_bytes(PNG)
+
+    run_threads(tmp_path, fake, [
+        ["canh mot rat dep va nhieu chi tiet", "logo.png", "", ""],
+        ["canh hai rat dep va nhieu chi tiet", "logo.png", "", ""],
+        ["canh ba rat dep va nhieu chi tiet", "logo.png", "", ""],
+        ["canh bon rat dep va nhieu chi tiet", "logo.png", "", ""],
+    ], threads=4)
+
+    assert len(fake.presigns) == 1
+    assert len(fake.uploads) == 1
+
+
+def test_moi_dong_van_co_idempotency_key_rieng_khi_song_song(tmp_path, fake):
+    run_threads(tmp_path, fake, [
+        [f"canh so {i} rat dep va nhieu chi tiet", "", "", ""] for i in range(5)
+    ], threads=3)
+
+    keys = [b["idempotencyKey"] for b in fake.created]
+    assert len(set(keys)) == 5
+
+
+def test_dong_bo_qua_van_dung_cho_khi_song_song(tmp_path, fake):
+    rep = run_threads(tmp_path, fake, [
+        ["canh mot rat dep va nhieu chi tiet", "", "", ""],
+        ["", "", "9:16", ""],
+        ["canh ba rat dep va nhieu chi tiet", "", "", ""],
+    ], threads=3)
+
+    assert [e.line for e in rep.entries] == [2, 3, 4]
+    assert rep.entries[1].status == "skipped"
+
+
 def test_dry_run_khong_tao_job(tmp_path, fake):
     path = make_sheet(tmp_path, [["mot canh bien hoang hon rat dep", "", "", ""]])
     rows = sheet.read(path)

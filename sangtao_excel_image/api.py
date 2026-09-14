@@ -83,6 +83,10 @@ class SangTaoClient:
         self._upload_cache: dict[str, str] = {}
         self._persistent_cache = upload_cache
         self._upload_lock = threading.Lock()
+        # Moi file mot khoa rieng: nhieu luong cung can mot anh thi mot luong
+        # upload, cac luong con lai cho roi dung chung ket qua — thay vi ca ba
+        # cung upload mot file.
+        self._file_locks: dict[str, threading.Lock] = {}
 
     def __repr__(self) -> str:
         # Khong bao gio in api key ra log.
@@ -216,15 +220,33 @@ class SangTaoClient:
         chi ton dung mot lan upload.
         """
         digest = _file_digest(path)
+
         with self._upload_lock:
-            cached = self._upload_cache.get(digest)
-            if not cached and self._persistent_cache is not None:
-                cached = self._persistent_cache.get(digest)
-                if cached:
-                    self._upload_cache[digest] = cached
+            cached = self._lookup(digest)
+            if not cached:
+                file_lock = self._file_locks.setdefault(digest, threading.Lock())
         if cached:
             return cached
 
+        # Chi mot luong upload file nay; nhung luong khac cho o day roi lay
+        # ket qua tu cache.
+        with file_lock:
+            with self._upload_lock:
+                cached = self._lookup(digest)
+            if cached:
+                return cached
+            return self._do_upload(path, digest)
+
+    def _lookup(self, digest: str) -> str | None:
+        """Tim trong cache. Goi khi dang giu _upload_lock."""
+        cached = self._upload_cache.get(digest)
+        if not cached and self._persistent_cache is not None:
+            cached = self._persistent_cache.get(digest)
+            if cached:
+                self._upload_cache[digest] = cached
+        return cached
+
+    def _do_upload(self, path: Path, digest: str) -> str:
         content_type = mimetypes.guess_type(path.name)[0] or "image/png"
 
         presign = self._request(

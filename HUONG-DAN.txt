@@ -179,6 +179,9 @@ và tạo key mới.
   Chọn nơi lưu kết quả:
       TaoAnh.exe jobs.xlsx -o D:\anh-khach-A
 
+  Tạo nhiều ảnh cùng lúc cho nhanh:
+      TaoAnh.exe jobs.xlsx -t 6
+
   Chỉ kiểm tra, không tạo ảnh:
       TaoAnh.exe jobs.xlsx --dry-run
 
@@ -187,6 +190,10 @@ và tạo key mới.
 
   Xem tất cả lựa chọn:
       TaoAnh.exe --help
+
+LƯU Ý: Mặc định chương trình tạo 3 ảnh cùng lúc. Muốn nhanh hơn
+  thì tăng lên bằng -t, tối đa 10. Đặt cao quá không nhanh thêm
+  mà chỉ nặng máy chủ.
 
 LƯU Ý: Cũng có thể kéo thả file .xlsx thẳng vào biểu tượng
   TaoAnh.exe.
