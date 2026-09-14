@@ -1,0 +1,10 @@
+* text=auto eol=lf
+
+# Windows batch phai giu CRLF moi chay dung
+*.bat text eol=crlf
+
+# File nhi phan, dung dung vao
+*.xlsx binary
+*.docx binary
+*.png binary
+*.jpg binary

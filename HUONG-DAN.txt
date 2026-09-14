@@ -1,0 +1,192 @@
+﻿================================================================
+  TẠO ẢNH HÀNG LOẠT TỪ FILE EXCEL — sangtao.ai
+================================================================
+
+Công cụ này đọc một file Excel, mỗi dòng là một ảnh cần tạo, rồi
+tự gọi API sangtao.ai và tải ảnh về máy bạn.
+
+
+----------------------------------------------------------------
+  LẦN ĐẦU SỬ DỤNG
+----------------------------------------------------------------
+
+1. Giải nén thư mục này ra (ví dụ ra D:\tao-anh).
+   Đừng chạy trực tiếp từ bên trong file .zip.
+
+2. Lấy API key: vào sangtao.ai → đăng nhập → Cài đặt → API Key →
+   tạo key mới. Copy chuỗi key đó.
+
+3. Mở file mau.xlsx, điền nội dung ảnh bạn muốn tạo (xem phần
+   CÁCH ĐIỀN FILE bên dưới), rồi lưu lại.
+
+4. Bấm đúp vào TaoAnh.exe.
+
+5. Chương trình sẽ hỏi API key. Dán key vào rồi bấm Enter.
+   Key được lưu vào config.txt, lần sau không phải nhập lại.
+
+6. Ngồi đợi. Mỗi ảnh mất khoảng 30–90 giây.
+
+LƯU Ý: Lần đầu chạy, Windows có thể hiện bảng cảnh báo màu xanh
+  "Windows protected your PC". Bấm "More info" rồi bấm "Run
+  anyway". Đây là vì file chưa được mua chứng chỉ ký số, không
+  phải virus. Mã nguồn công khai tại:
+
+    https://github.com/sangtao-ai/sangtao-excel-image
+
+
+----------------------------------------------------------------
+  CÁCH ĐIỀN FILE
+----------------------------------------------------------------
+
+File cần dùng 4 cột. Dòng đầu tiên là dòng tiêu đề:
+
+    prompt | images | aspectRatio | format
+
+Chỉ cột "prompt" là BẮT BUỘC. Ba cột còn lại để trống cũng được.
+
+  prompt
+      Mô tả ảnh bạn muốn tạo.
+      Viết đủ: cảnh gì, phong cách gì, bố cục ra sao.
+      Viết quá ngắn (ví dụ "hình vuông xanh") sẽ bị từ chối.
+
+    A vintage travel poster of Ha Long Bay at sunset,
+    bold retro typography, limestone karsts against an orange sky
+
+  images
+      Ảnh tham chiếu — để trống nếu không cần. Tối đa 10 ảnh mỗi
+      dòng.
+      Điền được cả hai kiểu:
+          • Đường dẫn trên máy:  D:\anh\logo.png
+          • Link trên mạng:      https://example.com/anh.jpg
+      Nhiều ảnh thì phân cách bằng dấu chấm phẩy:
+          D:\anh\logo.png; https://example.com/anh.jpg
+      Ảnh trên máy sẽ được tự động tải lên trước khi tạo ảnh.
+      Nếu nhiều dòng dùng chung một ảnh, nó chỉ tải lên một lần.
+
+  aspectRatio
+      Tỷ lệ khung ảnh: 1:1, 16:9, 9:16...
+      Để trống thì hệ thống tự chọn.
+
+  format
+      png hoặc jpeg. Để trống thì mặc định png.
+
+LƯU Ý: Mỗi dòng cho ra MỘT ảnh. Muốn 3 ảnh cùng nội dung thì
+  copy dòng đó thành 3 dòng.
+
+
+----------------------------------------------------------------
+  KẾT QUẢ NẰM Ở ĐÂU
+----------------------------------------------------------------
+
+Sau khi chạy xong, cạnh file Excel sẽ có một thư mục mới tên
+kiểu:
+
+    ket-qua_2026-09-14_0930\
+        0001.png          ← ảnh của dòng 2 trong Excel
+        0002.png          ← ảnh của dòng 3
+        ...
+        _ket-qua.xlsx     ← bảng tổng hợp
+
+File _ket-qua.xlsx cho biết từng dòng: thành công hay lỗi, link
+ảnh, tên file đã tải về, và hết bao nhiêu credit.
+
+QUAN TRỌNG: Ảnh trên máy chủ bị xoá sau 7 ngày. Chương trình đã
+  tải về máy bạn rồi, nhưng đừng chỉ dựa vào link trong bảng kết
+  quả để lưu trữ lâu dài.
+
+
+----------------------------------------------------------------
+  KIỂM TRA TRƯỚC KHI TỐN TIỀN
+----------------------------------------------------------------
+
+Muốn kiểm tra file đã điền đúng chưa mà chưa muốn tạo ảnh thật:
+
+Mở Command Prompt tại thư mục này rồi gõ:
+
+    TaoAnh.exe mau.xlsx --dry-run
+
+Lệnh này kiểm tra từng dòng, báo rõ dòng nào thiếu prompt, dòng
+nào sai đường dẫn ảnh — và KHÔNG tạo ảnh, KHÔNG trừ tiền.
+
+LƯU Ý: Nên chạy thử cái này trước khi chạy file có vài trăm
+  dòng.
+
+
+----------------------------------------------------------------
+  LỖI HAY GẶP
+----------------------------------------------------------------
+
+  "API key không đúng"
+      Key sai hoặc đã bị xoá. Mở config.txt, dán lại key mới.
+
+  "Không tìm thấy ảnh trên máy: ..."
+      Đường dẫn trong cột images sai. Chương trình có in ra nó
+      đã tìm ở đâu — so lại với vị trí thật của file ảnh.
+      Mẹo: bấm chuột phải vào file ảnh → "Copy as path" rồi dán
+      vào.
+
+  "PROMPT_UNCLEAR"
+      Mô tả quá ngắn hoặc quá mơ hồ. Viết dài và cụ thể hơn.
+
+  "CONTENT_REJECTED"
+      Nội dung vi phạm chính sách. Đổi cách mô tả.
+
+  "Không tải được ảnh tham chiếu"
+      Link ảnh không mở được từ máy chủ. Một số trang chặn tải
+      ảnh từ bên ngoài — trong trường hợp đó, tải ảnh về máy rồi
+      điền đường dẫn trên máy thay vì điền link.
+
+  "Mở file Excel trong lúc chạy"
+      Chương trình không đọc được. Đóng Excel lại rồi chạy lại.
+
+  LƯU Ý: Job bị lỗi KHÔNG bị trừ tiền, credit được hoàn tự động.
+
+
+----------------------------------------------------------------
+  CHẠY LẠI NHỮNG DÒNG BỊ LỖI
+----------------------------------------------------------------
+
+Mở _ket-qua.xlsx, xem cột "trang_thai" để biết dòng nào lỗi.
+
+Tạo một file Excel mới chỉ chứa những dòng đó (đã sửa lỗi), rồi
+chạy lại bình thường.
+
+Chương trình không bao giờ ghi đè lên thư mục kết quả cũ, nên
+ảnh đã tải về từ lần trước vẫn còn nguyên.
+
+
+----------------------------------------------------------------
+  LƯU Ý VỀ BẢO MẬT
+----------------------------------------------------------------
+
+File config.txt chứa API key của bạn. Đây là thông tin bí mật:
+
+  - Đừng gửi file này cho người khác
+  - Đừng đưa lên GitHub, Google Drive dùng chung, hay nhóm chat
+  - Ai có key đều dùng được credit của bạn
+
+Nếu lỡ lộ key: vào sangtao.ai → Cài đặt → API Key → xoá key cũ
+và tạo key mới.
+
+
+----------------------------------------------------------------
+  CÁC LỆNH KHÁC
+----------------------------------------------------------------
+
+  Chạy với một file cụ thể:
+      TaoAnh.exe D:\duong-dan\jobs.xlsx
+
+  Chọn nơi lưu kết quả:
+      TaoAnh.exe jobs.xlsx -o D:\anh-khach-A
+
+  Chỉ kiểm tra, không tạo ảnh:
+      TaoAnh.exe jobs.xlsx --dry-run
+
+  Xem chi tiết hơn khi chạy:
+      TaoAnh.exe jobs.xlsx -v
+
+  Xem tất cả lựa chọn:
+      TaoAnh.exe --help
+
+LƯU Ý: Cũng có thể kéo thả file .xlsx thẳng vào biểu tượng
+  TaoAnh.exe.
