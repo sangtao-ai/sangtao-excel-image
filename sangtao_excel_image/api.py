@@ -92,9 +92,6 @@ class SangTaoClient:
         # Khong bao gio in api key ra log.
         return f"<SangTaoClient base_url={self.base_url!r}>"
 
-    def __repr__(self) -> str:  # tranh in nham api key khi debug
-        return f"<SangTaoClient base_url={self.base_url!r}>"
-
     # ------------------------------------------------------------------ utils
 
     def _request(self, method: str, path: str, **kwargs) -> dict:
@@ -137,8 +134,7 @@ class SangTaoClient:
         """POST /agents/jobs/create -> {jobId, status: "WaitingForAgent", ...}"""
         body: dict = {"model": MODEL, "prompt": prompt}
 
-        # Docs canh bao truong la bi bo qua im lang va API van tra 200. Nen chi
-        # gui dung nhung truong co gia tri, khong gui key rong.
+        # Chi gui nhung truong co gia tri, khong gui key rong.
         if reference_images:
             body["referenceImages"] = reference_images
         if aspect_ratio:
@@ -160,8 +156,7 @@ class SangTaoClient:
 
         return JobResult(
             job_id=data.get("jobId", job_id),
-            # Docs: "So sanh status khong phan biet hoa thuong - gia tri tra ve
-            # luc xong la chu thuong."
+            # So sanh khong phan biet hoa thuong.
             status=str(data.get("status", "")).lower(),
             result_images=images,
             credit_cost=float(data.get("creditCost") or 0),
@@ -205,19 +200,13 @@ class SangTaoClient:
 
             time.sleep(min(POLL_INTERVAL, max(0, deadline - time.monotonic())))
 
-    # ------------------------------------------------------------ user assets
+    # ----------------------------------------------------------- upload anh
 
     def upload_local_image(self, path: Path) -> str:
         """Upload anh tu may len, tra ve URL cong khai dung lam anh tham chieu.
 
-        Hai buoc:
-          1. POST /images/presign  -> sasUrl + publicUrl
-          2. PUT  sasUrl (binary)  -> day file len
-
-        Khong co buoc xac nhan: PUT xong la publicUrl dung duoc ngay.
-
-        Ket qua duoc cache theo noi dung file, nen mot anh dung lai o nhieu dong
-        chi ton dung mot lan upload.
+        Xin link upload roi day file len. Ket qua duoc cache theo noi dung file,
+        nen mot anh dung lai o nhieu dong chi ton dung mot lan upload.
         """
         digest = _file_digest(path)
 

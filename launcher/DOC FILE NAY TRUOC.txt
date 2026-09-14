@@ -1,0 +1,115 @@
+﻿================================================================
+  BẮT ĐẦU TỪ ĐÂY
+================================================================
+
+Bộ này giúp bạn tạo hàng loạt ảnh AI từ một file Excel.
+Mỗi dòng trong Excel = một ảnh.
+
+
+----------------------------------------------------------------
+  LÀM THEO 4 BƯỚC
+----------------------------------------------------------------
+
+BƯỚC 1 — Giải nén
+
+   Nếu bạn đang xem file này từ bên trong file .zip thì hãy
+   giải nén ra một thư mục trước (ví dụ D:\tao-anh), rồi mới
+   làm tiếp. Chạy trực tiếp trong .zip sẽ lỗi.
+
+
+BƯỚC 2 — Lấy API key
+
+   Vào sangtao.ai → đăng nhập → Cài đặt → API Key → tạo key mới.
+   Copy chuỗi key đó, lát nữa dán vào.
+
+   Chưa có tài khoản, hoặc muốn dùng thử trước?
+   Nhắn cho mình để được cấp 1000 ảnh miễn phí:
+
+       https://www.facebook.com/cong.dac.dev
+
+
+BƯỚC 3 — Điền file Excel
+
+   Mở file  mau.xlsx  trong thư mục này.
+   Cột "prompt" là mô tả ảnh bạn muốn tạo — bắt buộc phải có.
+   Ba cột còn lại không bắt buộc.
+
+   Điền xong thì LƯU LẠI và ĐÓNG Excel.
+   (Để Excel đang mở thì chương trình không đọc được file.)
+
+
+BƯỚC 4 — Chạy
+
+   Bấm đúp vào:     1. CHAY - Tao anh.bat
+
+   Lần đầu chương trình sẽ hỏi API key — dán vào rồi Enter.
+   Những lần sau không phải nhập lại nữa.
+
+   Xong. Ngồi đợi, mỗi ảnh khoảng 30–90 giây.
+
+
+----------------------------------------------------------------
+  ẢNH XONG NẰM Ở ĐÂU
+----------------------------------------------------------------
+
+Ngay trong thư mục này sẽ có một thư mục mới tên kiểu
+ket-qua_2026-09-14_0930, bên trong là:
+
+   0001.png          ảnh của dòng 2 trong Excel
+   0002.png          ảnh của dòng 3
+   ...
+   _ket-qua.xlsx     bảng cho biết dòng nào xong, dòng nào lỗi
+
+
+----------------------------------------------------------------
+  MẸO: KIỂM TRA TRƯỚC CHO CHẮC
+----------------------------------------------------------------
+
+Nếu file của bạn có nhiều dòng, nên bấm đúp vào:
+
+   2. KIEM TRA - Khong ton tien.bat
+
+File này chỉ soát lại xem bạn điền đúng chưa — dòng nào thiếu
+mô tả, dòng nào sai đường dẫn ảnh. Nó KHÔNG tạo ảnh và KHÔNG
+trừ tiền, nên chạy thoải mái.
+
+Sửa hết lỗi rồi hãy chạy file số 1.
+
+
+----------------------------------------------------------------
+  LƯU Ý KHI CHẠY LẦN ĐẦU
+----------------------------------------------------------------
+
+Windows có thể hiện bảng màu xanh "Windows protected your PC".
+
+   Bấm  "More info"  →  rồi bấm  "Run anyway"
+
+Đây là vì file chưa mua chứng chỉ ký số, không phải virus.
+Mã nguồn công khai, ai cũng xem được tại:
+
+   https://github.com/sangtao-ai/sangtao-excel-image
+
+
+----------------------------------------------------------------
+  CẦN BIẾT THÊM
+----------------------------------------------------------------
+
+Muốn dùng ảnh tham chiếu, muốn đổi tỷ lệ khung ảnh, hoặc gặp
+lỗi lạ — mở file hướng dẫn đầy đủ:
+
+   HUONG-DAN.txt      (mở bằng Notepad)
+   HUONG-DAN.docx     (mở bằng Word)
+
+
+----------------------------------------------------------------
+  BẢO MẬT
+----------------------------------------------------------------
+
+Sau khi nhập key, thư mục này sẽ có thêm file config.txt chứa
+API key của bạn.
+
+ĐỪNG gửi file config.txt cho ai, đừng đưa lên nhóm chat hay
+Google Drive dùng chung. Ai có key đều xài được credit của bạn.
+
+Nếu muốn gửi cả bộ này cho người khác thì xoá file config.txt
+đi trước.

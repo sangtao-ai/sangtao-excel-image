@@ -11,6 +11,7 @@ from pathlib import Path
 TITLE = "TẠO ẢNH HÀNG LOẠT TỪ FILE EXCEL — sangtao.ai"
 
 REPO_URL = "https://github.com/sangtao-ai/sangtao-excel-image"
+FB_URL = "https://www.facebook.com/cong.dac.dev"
 
 INTRO = (
     "Công cụ này đọc một file Excel, mỗi dòng là một ảnh cần tạo, "
@@ -26,7 +27,10 @@ SECTIONS: list[tuple[str, list]] = [
             "Đừng chạy trực tiếp từ bên trong file .zip.",
 
             "Lấy API key: vào sangtao.ai → đăng nhập → Cài đặt → API Key → "
-            "tạo key mới. Copy chuỗi key đó.",
+            "tạo key mới. Copy chuỗi key đó.\n"
+            "Chưa có tài khoản, hoặc muốn dùng thử trước? Nhắn cho mình để "
+            "được cấp 1000 ảnh miễn phí:\n"
+            "    " + FB_URL,
 
             "Mở file mau.xlsx, điền nội dung ảnh bạn muốn tạo "
             "(xem phần CÁCH ĐIỀN FILE bên dưới), rồi lưu lại.",
@@ -107,7 +111,8 @@ SECTIONS: list[tuple[str, list]] = [
 
     ("LỖI HAY GẶP", [
         ("error", ("API key không đúng",
-                   "Key sai hoặc đã bị xoá. Mở config.txt, dán lại key mới.")),
+                   "Key sai hoặc đã bị xoá. Mở config.txt, dán lại key mới.\n"
+                   "Cần key mới thì nhắn: " + FB_URL)),
         ("error", ("Không tìm thấy ảnh trên máy: ...",
                    "Đường dẫn trong cột images sai. Chương trình có in ra nó "
                    "đã tìm ở đâu — so lại với vị trí thật của file ảnh.\n"
@@ -123,6 +128,15 @@ SECTIONS: list[tuple[str, list]] = [
         ("error", ("Mở file Excel trong lúc chạy",
                    "Chương trình không đọc được. Đóng Excel lại rồi chạy lại.")),
         ("note", "Job bị lỗi KHÔNG bị trừ tiền, credit được hoàn tự động."),
+    ]),
+
+    ("CHẠY NHANH HƠN", [
+        "Mặc định chương trình tạo 3 ảnh cùng lúc.",
+        "Muốn nhanh hơn thì mở file config.txt, sửa dòng:",
+        ("code", "so_luong_cung_luc = 3"),
+        "Đổi số 3 thành số bạn muốn. Nhận từ 1 đến 5.",
+        ("note", "Đặt 5 là nhanh nhất. Ghi số lớn hơn cũng không nhanh thêm, "
+                 "chương trình sẽ tự hạ về 5."),
     ]),
 
     ("CHẠY LẠI NHỮNG DÒNG BỊ LỖI", [
@@ -147,13 +161,10 @@ SECTIONS: list[tuple[str, list]] = [
     ("CÁC LỆNH KHÁC", [
         ("cmd", ("Chạy với một file cụ thể", "TaoAnh.exe D:\\duong-dan\\jobs.xlsx")),
         ("cmd", ("Chọn nơi lưu kết quả", "TaoAnh.exe jobs.xlsx -o D:\\anh-khach-A")),
-        ("cmd", ("Tạo nhiều ảnh cùng lúc cho nhanh", "TaoAnh.exe jobs.xlsx -t 6")),
+        ("cmd", ("Tạo nhiều ảnh cùng lúc cho nhanh", "TaoAnh.exe jobs.xlsx -t 5")),
         ("cmd", ("Chỉ kiểm tra, không tạo ảnh", "TaoAnh.exe jobs.xlsx --dry-run")),
         ("cmd", ("Xem chi tiết hơn khi chạy", "TaoAnh.exe jobs.xlsx -v")),
         ("cmd", ("Xem tất cả lựa chọn", "TaoAnh.exe --help")),
-        ("note", "Mặc định chương trình tạo 3 ảnh cùng lúc. Muốn nhanh hơn thì "
-                 "tăng lên bằng -t, tối đa 10. Đặt cao quá không nhanh thêm mà "
-                 "chỉ nặng máy chủ."),
         ("note", "Cũng có thể kéo thả file .xlsx thẳng vào biểu tượng TaoAnh.exe."),
     ]),
 ]

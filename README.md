@@ -22,9 +22,9 @@ Hướng dẫn chi tiết nằm trong `HUONG-DAN.txt` (hoặc `HUONG-DAN.docx`) 
 Chỉ `prompt` là bắt buộc.
 
 - **images** — tối đa 10 ảnh, phân cách bằng `;` hoặc xuống dòng. Nhận cả đường dẫn
-  trên máy lẫn URL. Ảnh trên máy được upload tự động qua `/images/presign`
-  (2 bước: presign → PUT, không có bước confirm). Cache theo nội dung file nên một
-  ảnh dùng lại ở nhiều dòng — kể cả ở các lần chạy khác nhau — chỉ upload một lần.
+  trên máy lẫn URL. Ảnh trên máy được upload tự động. Cache theo nội dung file nên
+  một ảnh dùng lại ở nhiều dòng — kể cả ở các lần chạy khác nhau — chỉ upload một
+  lần.
 - Cũng nhận kiểu tách cột `image1`, `image2`, …
 - Tên cột không phân biệt hoa thường (`Prompt`, `Aspect Ratio` đều hiểu).
 - Gõ sai tên cột → **báo lỗi dừng ngay**, không chạy tiếp với dữ liệu thiếu.
@@ -56,10 +56,12 @@ python -m venv .venv && .venv/Scripts/pip install -r requirements.txt
 API key lấy tại sangtao.ai → Cài đặt → API Key. Đặt vào `config.txt`, biến môi
 trường `SANGTAO_API_KEY`, hoặc `--api-key`.
 
+Số ảnh chạy cùng lúc đặt trong `config.txt` (`so_luong_cung_luc`) hoặc `-t`.
+
 ```bash
 python main.py jobs.xlsx --dry-run      # kiểm tra file, không tốn tiền
 python main.py jobs.xlsx -o D:\anh      # chọn nơi lưu
-python main.py jobs.xlsx -t 6           # 6 ảnh cùng lúc (mặc định 3, tối đa 10)
+python main.py jobs.xlsx -t 5           # 5 ảnh cùng lúc (mặc định 3, tối đa 5)
 python main.py jobs.xlsx --retry 2 -v   # thử lại nhiều hơn, in chi tiết
 ```
 
@@ -86,26 +88,7 @@ hướng dẫn ae bấm qua.
 70 test, không gọi mạng — lớp HTTP được thay bằng bản giả nên vẫn đi qua đúng code
 thật của client.
 
-## Ghi chú về API
-
-Vài điều rút ra từ docs, đã xử lý sẵn trong tool:
-
-- Auth bằng header `X-Api-Key`, không phải `Authorization: Bearer`.
-- Trường lạ **bị bỏ qua im lặng**, API vẫn trả 200 — nên tool chỉ gửi field có giá
-  trị, và validate tên cột chặt ở phía mình.
-- `status` lúc xong trả về **chữ thường** (`complete`), phải so sánh không phân biệt
-  hoa thường.
-- `failureKind` quyết định retry có ích không. `GENERATION_TIMEOUT` /
-  `QUOTA_EXHAUSTED` thì thử lại được; `PROMPT_UNCLEAR` / `CONTENT_REJECTED` /
-  `REFERENCE_DOWNLOAD_FAILED` thì retry chỉ tốn thêm tiền.
-- Job hỏng không bị tính tiền, credit hoàn tự động.
-- Chạy song song mặc định 3 ảnh cùng lúc (`-t`, tối đa 10). Đo thực tế: 6 ảnh với
-  3 luồng mất 84 giây, so với ~210 giây nếu chạy tuần tự.
-- Báo cáo và tên file luôn theo đúng thứ tự dòng trong Excel, kể cả khi các job
-  hoàn thành không theo thứ tự.
-- `idempotencyKey` để retry không bị trừ tiền hai lần.
-- Ảnh upload qua `/images/presign` cũng sống 7 ngày, nên cache có hạn 6 ngày —
-  không bao giờ gửi URL sắp chết cho một job đang chờ.
+Tài liệu API: [sangtao.ai/vi/api-docs](https://sangtao.ai/vi/api-docs#chatgpt-image)
 
 ## Bảo mật
 

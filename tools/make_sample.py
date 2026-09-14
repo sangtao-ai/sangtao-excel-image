@@ -46,19 +46,23 @@ ROWS = [
     ],
     [
         "A cozy bookshop interior in autumn, warm lamp light, wooden shelves full of "
-        "books, rain on the window, painted in the same art style as the reference",
-        "D:\\anh\\phong-cach.jpg",
+        "books, rain on the window, soft painterly style",
+        "",
         "16:9",
         "png",
     ],
     [
-        "Banner for a coffee brand, the logo from the reference placed top-left, "
-        "roasted beans scattered on dark wood, dramatic side lighting, copy space right",
-        "D:\\anh\\logo.png; https://example.com/anh-mau.jpg",
+        "Banner for a coffee brand, roasted beans scattered on dark wood, dramatic "
+        "side lighting, generous copy space on the right",
+        "",
         "16:9",
         "jpeg",
     ],
 ]
+
+# Cot images de trong trong file mau. Neu dien san mot duong dan vi du thi lan
+# chay dau tien se bao "khong tim thay anh" va nguoi dung moi dung tuong minh
+# lam sai — huong dan cach dien da nam trong ghi chu cua o tieu de.
 
 
 def build_xlsx(dest: Path) -> None:

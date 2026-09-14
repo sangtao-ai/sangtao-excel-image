@@ -49,9 +49,10 @@ mkdir "%OUT%"
 
 copy /y dist\TaoAnh.exe "%OUT%\" >nul
 copy /y mau.xlsx "%OUT%\" >nul
-copy /y mau.csv "%OUT%\" >nul
 copy /y HUONG-DAN.txt "%OUT%\" >nul 2>nul
 copy /y HUONG-DAN.docx "%OUT%\" >nul 2>nul
+copy /y "launcher\*.bat" "%OUT%\" >nul
+copy /y "launcher\DOC FILE NAY TRUOC.txt" "%OUT%\" >nul
 
 echo.
 echo ================================================================

@@ -19,6 +19,8 @@ from .ui import ARROW, DASH, ELLIPSIS, ConsoleUI
 SUPPORTED = (".xlsx", ".xlsm", ".csv")
 SAMPLE_NAMES = {"mau.xlsx", "mau.csv", "sample.xlsx", "sample.csv"}
 
+FB_URL = "https://www.facebook.com/cong.dac.dev"
+
 
 def _pause_if_clicked(interactive: bool) -> None:
     """Giu cua so lai de nguoi dung con doc duoc ket qua."""
@@ -83,6 +85,10 @@ def _prompt_api_key() -> str | None:
     print("  Chua co API key.")
     print(f"  Lay key tai: sangtao.ai {ARROW} Cai dat {ARROW} API Key")
     print()
+    print("  Chua co tai khoan, hoac muon dung thu truoc?")
+    print("  Nhan cho minh de duoc cap 1000 anh mien phi:")
+    print(f"      {FB_URL}")
+    print()
     try:
         key = input("  Dan API key vao day roi bam Enter: ").strip()
     except (EOFError, KeyboardInterrupt):
@@ -123,9 +129,10 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
                         help="Thu muc luu ket qua")
     parser.add_argument("-k", "--api-key",
                         help="API key (uu tien hon config.txt)")
-    parser.add_argument("-t", "--threads", type=int, default=DEFAULT_THREADS,
+    parser.add_argument("-t", "--threads", type=int, default=None,
                         help=f"So anh tao cung luc (1-{MAX_THREADS}, "
-                             f"mac dinh {DEFAULT_THREADS})")
+                             f"mac dinh {DEFAULT_THREADS}). Cung dat duoc "
+                             f"trong config.txt")
     parser.add_argument("--retry", type=int, default=1,
                         help="So lan thu lai khi loi tam thoi (mac dinh 1)")
     parser.add_argument("--timeout", type=int, default=api.POLL_TIMEOUT,
@@ -182,8 +189,15 @@ def _run(args: argparse.Namespace, ui: ConsoleUI, interactive: bool) -> int:
         print(f"  {input_path.name} khong co dong du lieu nao.")
         return 1
 
-    threads = max(1, min(args.threads, MAX_THREADS))
-    if args.threads != threads:
+    # Uu tien tham so dong lenh, sau do toi config.txt, cuoi cung la mac dinh.
+    wanted = args.threads
+    if wanted is None:
+        wanted = config.load_threads()
+    if wanted is None:
+        wanted = DEFAULT_THREADS
+
+    threads = max(1, min(wanted, MAX_THREADS))
+    if wanted != threads:
         print(f"  So luong chay cung luc chi nhan 1-{MAX_THREADS}, "
               f"da dat ve {threads}.")
 
@@ -219,6 +233,7 @@ def _run(args: argparse.Namespace, ui: ConsoleUI, interactive: bool) -> int:
             if exc.status == 401:
                 print("  API key khong dung. Kiem tra lai trong config.txt.")
                 print(f"  Lay key tai: sangtao.ai {ARROW} Cai dat {ARROW} API Key")
+                print(f"  Can key moi thi nhan: {FB_URL}")
                 return 1
             # Loi khac o buoc nay khong dang de chan lai: co the chi la mang chap
             # chon, hoac endpoint kiem tra so du doi ten. Van chay tiep.

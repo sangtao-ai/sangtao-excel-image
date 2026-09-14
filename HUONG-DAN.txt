@@ -15,6 +15,9 @@ tự gọi API sangtao.ai và tải ảnh về máy bạn.
 
 2. Lấy API key: vào sangtao.ai → đăng nhập → Cài đặt → API Key →
    tạo key mới. Copy chuỗi key đó.
+   Chưa có tài khoản, hoặc muốn dùng thử trước? Nhắn cho mình để
+   được cấp 1000 ảnh miễn phí:
+       https://www.facebook.com/cong.dac.dev
 
 3. Mở file mau.xlsx, điền nội dung ảnh bạn muốn tạo (xem phần
    CÁCH ĐIỀN FILE bên dưới), rồi lưu lại.
@@ -118,6 +121,8 @@ LƯU Ý: Nên chạy thử cái này trước khi chạy file có vài trăm
 
   "API key không đúng"
       Key sai hoặc đã bị xoá. Mở config.txt, dán lại key mới.
+      Cần key mới thì nhắn:
+      https://www.facebook.com/cong.dac.dev
 
   "Không tìm thấy ảnh trên máy: ..."
       Đường dẫn trong cột images sai. Chương trình có in ra nó
@@ -140,6 +145,22 @@ LƯU Ý: Nên chạy thử cái này trước khi chạy file có vài trăm
       Chương trình không đọc được. Đóng Excel lại rồi chạy lại.
 
   LƯU Ý: Job bị lỗi KHÔNG bị trừ tiền, credit được hoàn tự động.
+
+
+----------------------------------------------------------------
+  CHẠY NHANH HƠN
+----------------------------------------------------------------
+
+Mặc định chương trình tạo 3 ảnh cùng lúc.
+
+Muốn nhanh hơn thì mở file config.txt, sửa dòng:
+
+    so_luong_cung_luc = 3
+
+Đổi số 3 thành số bạn muốn. Nhận từ 1 đến 5.
+
+LƯU Ý: Đặt 5 là nhanh nhất. Ghi số lớn hơn cũng không nhanh
+  thêm, chương trình sẽ tự hạ về 5.
 
 
 ----------------------------------------------------------------
@@ -180,7 +201,7 @@ và tạo key mới.
       TaoAnh.exe jobs.xlsx -o D:\anh-khach-A
 
   Tạo nhiều ảnh cùng lúc cho nhanh:
-      TaoAnh.exe jobs.xlsx -t 6
+      TaoAnh.exe jobs.xlsx -t 5
 
   Chỉ kiểm tra, không tạo ảnh:
       TaoAnh.exe jobs.xlsx --dry-run
@@ -190,10 +211,6 @@ và tạo key mới.
 
   Xem tất cả lựa chọn:
       TaoAnh.exe --help
-
-LƯU Ý: Mặc định chương trình tạo 3 ảnh cùng lúc. Muốn nhanh hơn
-  thì tăng lên bằng -t, tối đa 10. Đặt cao quá không nhanh thêm
-  mà chỉ nặng máy chủ.
 
 LƯU Ý: Cũng có thể kéo thả file .xlsx thẳng vào biểu tượng
   TaoAnh.exe.

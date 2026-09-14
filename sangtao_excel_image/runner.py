@@ -15,7 +15,7 @@ from pathlib import Path
 from . import api, refs, report, sheet
 
 DEFAULT_THREADS = 3
-MAX_THREADS = 10
+MAX_THREADS = 5
 
 
 @dataclass
@@ -189,7 +189,7 @@ class Runner:
             if last.ok:
                 return self._download(row, last, reference_urls, index)
 
-            # Job hong khong bi tinh tien, credit duoc hoan tu dong.
+            # Chi thu lai nhung loi tam thoi.
             if last.retryable and attempt <= self.opt.retry:
                 self._say(self.ui.retrying, last, attempt)
                 continue

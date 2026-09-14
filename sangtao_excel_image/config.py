@@ -21,6 +21,12 @@ TEMPLATE = """\
 # dung dua len GitHub hay nhom chat.
 
 api_key =
+
+# So anh tao cung luc. Nhan tu 1 den 5, mac dinh 3.
+# Cang nhieu cang nhanh, nhung dat cao qua thi nang may chu ma
+# khong nhanh them bao nhieu. Khong ro thi cu de nguyen 3.
+
+so_luong_cung_luc = 3
 """
 
 
@@ -35,20 +41,35 @@ def config_path() -> Path:
     return app_dir() / CONFIG_NAME
 
 
-def _parse(text: str) -> str | None:
+KEY_NAMES = ("api_key", "apikey", "key")
+THREAD_NAMES = ("so_luong_cung_luc", "soluongcungluc", "threads", "luong")
+
+
+def _settings(text: str) -> dict[str, str]:
+    """Doc config.txt thanh cac cap ten = gia tri."""
+    out: dict[str, str] = {}
     for line in text.splitlines():
         line = line.strip()
         if not line or line.startswith("#"):
             continue
         if "=" in line:
             name, _, value = line.partition("=")
-            if name.strip().lower() in ("api_key", "apikey", "key"):
-                value = value.strip().strip('"').strip("'")
-                if value:
-                    return value
-        elif len(line) > 16 and " " not in line:
-            return line  # ca file chi co moi cai key
-    return None
+            value = value.strip().strip('"').strip("'")
+            if value:
+                out[name.strip().lower()] = value
+        elif len(line) > 16 and " " not in line and "api_key" not in out:
+            out["api_key"] = line  # ca file chi co moi cai key
+    return out
+
+
+def _read() -> dict[str, str]:
+    path = config_path()
+    if not path.exists():
+        return {}
+    try:
+        return _settings(path.read_text(encoding="utf-8-sig"))
+    except OSError:
+        return {}
 
 
 def load() -> str | None:
@@ -57,21 +78,55 @@ def load() -> str | None:
     if env:
         return env
 
-    path = config_path()
-    if path.exists():
-        try:
-            return _parse(path.read_text(encoding="utf-8-sig"))
-        except OSError:
-            return None
+    data = _read()
+    for name in KEY_NAMES:
+        if data.get(name):
+            return data[name]
+    return None
+
+
+def load_threads() -> int | None:
+    """So anh chay cung luc dat trong config.txt, None neu khong dat."""
+    data = _read()
+    for name in THREAD_NAMES:
+        value = data.get(name)
+        if value:
+            try:
+                return int(value)
+            except ValueError:
+                return None
     return None
 
 
 def save(api_key: str) -> Path:
+    """Ghi API key, giu nguyen nhung gi nguoi dung da chinh trong file."""
     path = config_path()
-    path.write_text(
-        TEMPLATE.replace("api_key =", f"api_key = {api_key}"),
-        encoding="utf-8",
-    )
+
+    if path.exists():
+        try:
+            lines = path.read_text(encoding="utf-8-sig").splitlines()
+        except OSError:
+            lines = TEMPLATE.splitlines()
+    else:
+        lines = TEMPLATE.splitlines()
+
+    out: list[str] = []
+    written = False
+    for line in lines:
+        stripped = line.strip()
+        # Chi dung vao dong cai dat that, khong dung vao dong ghi chu.
+        if not stripped.startswith("#") and "=" in stripped:
+            name = stripped.partition("=")[0].strip().lower()
+            if name in KEY_NAMES:
+                out.append(f"api_key = {api_key}")
+                written = True
+                continue
+        out.append(line)
+
+    if not written:
+        out.append(f"api_key = {api_key}")
+
+    path.write_text("\n".join(out) + "\n", encoding="utf-8")
     return path
 
 
