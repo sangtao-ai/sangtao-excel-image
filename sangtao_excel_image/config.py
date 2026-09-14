@@ -15,7 +15,8 @@ ENV_VAR = "SANGTAO_API_KEY"
 
 TEMPLATE = """\
 # Dan API key cua ban vao dong duoi day.
-# Lay key tai: sangtao.ai → Cai dat → API Key
+# Chua co key? Nhan de duoc cap kem 1000 anh mien phi:
+# https://www.facebook.com/cong.dac.dev
 #
 # Day la thong tin bi mat — dung gui file nay cho nguoi khac,
 # dung dua len GitHub hay nhom chat.

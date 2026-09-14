@@ -19,13 +19,11 @@ BƯỚC 1 — Giải nén
 
 BƯỚC 2 — Lấy API key
 
-   Vào sangtao.ai → đăng nhập → Cài đặt → API Key → tạo key mới.
-   Copy chuỗi key đó, lát nữa dán vào.
-
-   Chưa có tài khoản, hoặc muốn dùng thử trước?
-   Nhắn cho mình để được cấp 1000 ảnh miễn phí:
+   Nhắn cho mình để được cấp key kèm 1000 ảnh miễn phí:
 
        https://www.facebook.com/cong.dac.dev
+
+   Copy chuỗi key nhận được, lát nữa dán vào.
 
 
 BƯỚC 3 — Điền file Excel

@@ -14,7 +14,7 @@ from pathlib import Path
 
 from . import __version__, api, cache, config, sheet
 from .runner import DEFAULT_THREADS, MAX_THREADS, Options, Runner
-from .ui import ARROW, DASH, ELLIPSIS, ConsoleUI
+from .ui import DASH, ELLIPSIS, ConsoleUI
 
 SUPPORTED = (".xlsx", ".xlsm", ".csv")
 SAMPLE_NAMES = {"mau.xlsx", "mau.csv", "sample.xlsx", "sample.csv"}
@@ -83,10 +83,7 @@ def _choose_input(folder: Path) -> Path | None:
 def _prompt_api_key() -> str | None:
     print()
     print("  Chua co API key.")
-    print(f"  Lay key tai: sangtao.ai {ARROW} Cai dat {ARROW} API Key")
-    print()
-    print("  Chua co tai khoan, hoac muon dung thu truoc?")
-    print("  Nhan cho minh de duoc cap 1000 anh mien phi:")
+    print("  Nhan cho minh de duoc cap key kem 1000 anh mien phi:")
     print(f"      {FB_URL}")
     print()
     try:
@@ -232,7 +229,6 @@ def _run(args: argparse.Namespace, ui: ConsoleUI, interactive: bool) -> int:
         except api.ApiError as exc:
             if exc.status == 401:
                 print("  API key khong dung. Kiem tra lai trong config.txt.")
-                print(f"  Lay key tai: sangtao.ai {ARROW} Cai dat {ARROW} API Key")
                 print(f"  Can key moi thi nhan: {FB_URL}")
                 return 1
             # Loi khac o buoc nay khong dang de chan lai: co the chi la mang chap

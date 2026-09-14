@@ -26,10 +26,8 @@ SECTIONS: list[tuple[str, list]] = [
             "Giải nén thư mục này ra (ví dụ ra D:\\tao-anh).\n"
             "Đừng chạy trực tiếp từ bên trong file .zip.",
 
-            "Lấy API key: vào sangtao.ai → đăng nhập → Cài đặt → API Key → "
-            "tạo key mới. Copy chuỗi key đó.\n"
-            "Chưa có tài khoản, hoặc muốn dùng thử trước? Nhắn cho mình để "
-            "được cấp 1000 ảnh miễn phí:\n"
+            "Lấy API key: nhắn cho mình để được cấp key kèm 1000 ảnh "
+            "miễn phí.\n"
             "    " + FB_URL,
 
             "Mở file mau.xlsx, điền nội dung ảnh bạn muốn tạo "
@@ -154,8 +152,8 @@ SECTIONS: list[tuple[str, list]] = [
             "Đừng đưa lên GitHub, Google Drive dùng chung, hay nhóm chat",
             "Ai có key đều dùng được credit của bạn",
         ]),
-        "Nếu lỡ lộ key: vào sangtao.ai → Cài đặt → API Key → xoá key cũ "
-        "và tạo key mới.",
+        "Nếu lỡ lộ key: nhắn cho mình để huỷ key cũ và cấp key mới:",
+        ("code", FB_URL),
     ]),
 
     ("CÁC LỆNH KHÁC", [

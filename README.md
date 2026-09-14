@@ -53,8 +53,8 @@ python -m venv .venv && .venv/Scripts/pip install -r requirements.txt
 .venv/Scripts/python main.py jobs.xlsx
 ```
 
-API key lấy tại sangtao.ai → Cài đặt → API Key. Đặt vào `config.txt`, biến môi
-trường `SANGTAO_API_KEY`, hoặc `--api-key`.
+API key: nhắn [facebook.com/cong.dac.dev](https://www.facebook.com/cong.dac.dev) để được cấp kèm 1000 ảnh
+miễn phí. Đặt vào `config.txt`, biến môi trường `SANGTAO_API_KEY`, hoặc `--api-key`.
 
 Số ảnh chạy cùng lúc đặt trong `config.txt` (`so_luong_cung_luc`) hoặc `-t`.
 
