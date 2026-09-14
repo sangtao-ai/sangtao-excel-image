@@ -43,7 +43,7 @@ echo   Dang dong goi (mat 1-2 phut)...
     main.py || goto :fail
 
 echo   Gom file phat hanh...
-set OUT=dist\TaoAnh
+set OUT=release\TaoAnh
 if exist "%OUT%" rmdir /s /q "%OUT%"
 mkdir "%OUT%"
 
@@ -61,6 +61,7 @@ dir /b "%OUT%"
 echo ================================================================
 echo.
 echo   Nen ca thu muc "%OUT%" thanh .zip roi dua len GitHub Releases.
+echo   Hoac chay: gh release create v1.0.0 TaoAnh.zip
 echo.
 pause
 exit /b 0
